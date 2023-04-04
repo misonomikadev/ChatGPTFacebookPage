@@ -1,6 +1,5 @@
 const express = require('express')
 const crypto = require('crypto')
-const qs = require('qs')
 const ms = require('ms')
 
 const app = express()
