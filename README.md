@@ -68,17 +68,17 @@ module.exports = config
 
 <img src="./assets/ngrok.png"></img>
 
-- Tải về rồi giải nén bạn sẽ có file **ngrok.exe**, bấm vào đó rồi trở lại web ngrok rồi copy và paste phần lệnh ở phần **Connect your account** vào terminal đang mỏ bởi ngrok.
+- Tải về rồi giải nén bạn sẽ có file **ngrok.exe**, bấm vào đó rồi trở lại web ngrok rồi copy và paste phần lệnh ở phần **Connect your account** vào terminal đang mở bởi ngrok.
 
 - Bấm lệnh sau đây:
 ```sh
 ngrok http 5500
 ```
-- Sau khi bạn thấy giống ảnh bên dưới thì bạn copy URL mình gạch ngang màu đỏ nhé.
+- Sau khi bạn thấy giống ảnh bên dưới thì bạn copy URL mình gạch ngang màu đỏ nhé (không được tắt terminal này đi).
 
 <img src="./assets/ngrok1.png">
 
-- Paste URL vào phần Callback URL và thêm **/webhooks** nhé (không được tắt đi):
+- Paste URL vào phần Callback URL và thêm **/webhooks** nhé:
 
 <img src="./assets/webhooks.png"></img>
 
