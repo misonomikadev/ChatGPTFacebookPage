@@ -68,9 +68,6 @@ async function handlers(event) {
     return axios({
         url: `https://api.openai.com/v1/chat/completions`,
         method: 'post',
-        params: {
-            access_token: config.pageToken
-        },
         data: {
             model: config.openai.model,
             messages: !history ?
