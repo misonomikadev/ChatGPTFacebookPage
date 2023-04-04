@@ -9,11 +9,20 @@
 - Nhấn vào **[tạo App](https://developers.facebook.com/apps/creation/) -> Other -> None -> Ghi tên của app bạn rồi bấm Create App nhé :>**
 
 ## 3. Hướng dẫn làm:
-- Vào file **config.js** và 
+- Clone source code:
+```sh
+git clone https://github.com/Tungchaphet/ChatGPTFacebookPage.git
+cd ChatGPTFacebookPage
+```
+
+- Tải thư viện npm cần thiết:
+```sh
+npm install
+```
 
 - Bấm lệnh **npm start** trong terminal, sau khi bấm hiện ra **App đang chạy tại port: {port}** thì đừng thoát ra, để yên đó:
 
-- Sau khi tạo App xong rồi thì bạn nhìn vào phần **Add a product** tìm **Messenger** rồi nhấn vô **Set up**, nó sẽ tạo cho bạn 1 **Messenger Product**
+- Sau khi tạo App ở phần 2 xong rồi thì bạn nhìn vào **Add a product** tìm **Messenger** rồi nhấn vô **Set up**, nó sẽ tạo cho bạn 1 **Messenger Product**
 - Tìm **Access Token** trong **Product Messenger** như hình bên:
 
 <img src="./assets/access_tokens.png"></img>
@@ -85,4 +94,4 @@ ngrok http 5500
 - Sau khi bấm **Verify and save** và bạn thấy trên terminal có **Webhooks Verified** thì bạn đã thành công rồi.
 
 ## 5. Hỗ trợ:
-- Discord: https://discord.gg/aMFuE5UKZH
+- Discord: https://discord.gg/f7xUdhJ3j8
