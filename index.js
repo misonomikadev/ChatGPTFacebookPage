@@ -102,8 +102,4 @@ app.post('/webhooks', (req, res) => {
     return res.sendStatus(200)
 })
 
-app.listen(config.port,
-    async () => {
-        console.log(`App đang chạy tại port: ${config.port}`)
-    }
-)
+app.listen(config.port, () => console.log(`App đang chạy tại port: ${config.port}`))
