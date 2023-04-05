@@ -32,21 +32,33 @@ app.get('/webhooks', (req, res) => {
 })
 
 async function sendMessage(data) {
+    const obj = {
+        recipient: {
+            id: data.psid
+        },
+        messaging_type: 'RESPONSE',
+        message: {
+            text: data.content
+        }
+    }
+
+    if (data.image) {
+        obj.message.attachment = {
+            type: 'image',
+            payload: {
+                url: data.image,
+                is_reusable: true
+            }
+        }
+    } 
+
     return axios({
         url: `${config.baseURL}/me/messages`,
         method: 'post',
         params: {
             access_token: config.pageToken
         },
-        data: {
-            recipient: {
-                id: data.psid
-            },
-            messaging_type: 'RESPONSE',
-            message: {
-                text: data.content
-            }
-        },
+        data: obj,
         headers: {
             'Content-Type': 'application/json'
         }
@@ -55,70 +67,106 @@ async function sendMessage(data) {
 
 async function handlers(event) {
     const msg = event.entry[0].messaging[0]
-    if (config.ratelimit.has(msg.sender.id))
+    if (config.ratelimit.has(msg.sender.id)) {
         return sendMessage({
             psid: msg.sender.id,
             content: 'Bot đang xử lý câu hỏi trước, vui lòng chờ.'
         })
+    }
 
     config.ratelimit.set(msg.sender.id, true)
 
-    const history = config.cache.get(msg.sender.id)
     const content = msg.message.text.trim()
-    return axios({
-        url: `https://api.openai.com/v1/chat/completions`,
-        method: 'post',
-        data: {
-            model: config.openai.model,
-            messages: !history ?
-                [
-                    {
-                        role: 'user',
-                        content: content
-                    },
-                ] : [
-                    {
-                        role: 'user',
-                        content: history.question
-                    },
-                    {
-                        role: 'assistant',
-                        content: history.answer
-                    },
-                    {
-                        role: 'user',
-                        content: content
-                    }
-                ],
-            max_tokens: config.openai.max_tokens
-        },
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${config.openai.token}`
-        }
-    }).then(res => {
-        const success = res.data.choices[0].message.content
+    switch(config.mode) {
+        case'CHAT':
+            const history = config.cache.get(msg.sender.id)
 
-        config.cache.del(msg.sender.id)
-        config.cache.set(msg.sender.id, {
-            question: content,
-            answer: success
-        }, ms('10m'))
-
-        config.ratelimit.delete(msg.sender.id)
-        return sendMessage({
-            psid: msg.sender.id,
-            content: success
-        })
-    }).catch(error => {
-        console.error(error)
-        config.ratelimit.delete(msg.sender.id)
-
-        return sendMessage({
-            psid: msg.sender.id,
-            content: 'Có lỗi xảy ra, xin hãy kiểm tra lại.'
-        })
-    })
+            return axios({
+                url: `https://api.openai.com/v1/chat/completions`,
+                method: 'post',
+                data: {
+                    model: config.openai.model,
+                    messages: !history ?
+                        [
+                            {
+                                role: 'user',
+                                content: content
+                            },
+                        ] : [
+                            {
+                                role: 'user',
+                                content: history.question
+                            },
+                            {
+                                role: 'assistant',
+                                content: history.answer
+                            },
+                            {
+                                role: 'user',
+                                content: content
+                            }
+                        ],
+                    max_tokens: config.openai.max_tokens
+                },
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${config.openai.token}`
+                }
+            }).then(res => {
+                const success = res.data.choices[0].message.content
+        
+                config.cache.del(msg.sender.id)
+                config.cache.set(msg.sender.id, {
+                    question: content,
+                    answer: success
+                }, ms('10m'))
+        
+                config.ratelimit.delete(msg.sender.id)
+                return sendMessage({
+                    psid: msg.sender.id,
+                    content: success
+                })
+            }).catch(error => {
+                console.error(error)
+                config.ratelimit.delete(msg.sender.id)
+        
+                return sendMessage({
+                    psid: msg.sender.id,
+                    content: 'Có lỗi xảy ra, xin hãy kiểm tra lại.'
+                })
+            })
+        case'IMAGE':
+            return axios({
+                url: 'https://api.openai.com/v1/images/generations',
+                method: 'post',
+                data: {
+                    n: 1,
+                    prompt: content,
+                    response_format: 'url',
+                    size: '1024x1024'
+                },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${config.openai.token}`
+                }
+            }).then(res => {
+                config.ratelimit.delete(msg.sender.id)
+                return sendMessage({
+                    psid: msg.sender.id,
+                    image: res.data[0].url,
+                    content: `Đã tạo xong ảnh`
+                })
+            }).catch(error => {
+                console.error(error)
+                config.ratelimit.delete(msg.sender.id)
+        
+                return sendMessage({
+                    psid: msg.sender.id,
+                    content: 'Có lỗi xảy ra, xin hãy kiểm tra lại.'
+                })
+            })
+        default: throw new Error()
+    }
 }
 
 app.post('/webhooks', (req, res) => {
