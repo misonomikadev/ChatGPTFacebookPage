@@ -37,9 +37,7 @@ async function sendMessage(data) {
             id: data.psid
         },
         messaging_type: 'RESPONSE',
-        message: {
-            text: data.content
-        }
+        message: {}
     }
 
     if (data.image) {
@@ -50,7 +48,9 @@ async function sendMessage(data) {
                 is_reusable: true
             }
         }
-    } 
+    }
+
+    if (data.content) obj.message.text = data.content
 
     return axios({
         url: `${config.baseURL}/me/messages`,
@@ -153,8 +153,7 @@ async function handlers(event) {
                 config.ratelimit.delete(msg.sender.id)
                 return sendMessage({
                     psid: msg.sender.id,
-                    image: res.data[0].url,
-                    content: `Đã tạo xong ảnh`
+                    image: res.data.data[0].url
                 })
             }).catch(error => {
                 console.error(error)
