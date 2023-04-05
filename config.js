@@ -9,7 +9,7 @@ const config = {
         token: '', // API Token của ChatGPT
         max_tokens: 2048 // Bạn có thể thay đổi theo bạn muốn.
     },
-    mode: 'CHAT', // bạn có thể chỉnh thành IMAGE để bot tạo ảnh nhé. 
+    // mode: 'CHAT', // bạn có thể chỉnh thành IMAGE để bot tạo ảnh nhé. 
     baseURL: 'https://graph.facebook.com/v16.0',
     ratelimit: new Map(),
     cache: new NodeCache({
