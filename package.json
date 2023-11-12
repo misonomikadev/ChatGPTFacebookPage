@@ -1,0 +1,25 @@
+{
+  "name": "chatgptfacebookpage",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "nodemon --inspect index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.3.4",
+    "dotenv": "^16.3.1",
+    "events": "^3.3.0",
+    "express": "^4.18.2",
+    "ms": "^2.1.3",
+    "node-cache": "^5.1.2",
+    "openai": "^4.17.4"
+  },
+  "devDependencies": {
+    "morgan": "^1.10.0"
+  }
+}
